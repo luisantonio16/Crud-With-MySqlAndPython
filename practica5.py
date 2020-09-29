@@ -151,8 +151,9 @@ def menu_principal():
          
          database = Database()
          if opcion == 1:
-             agregar = 'no'
-             while agregar != 'no':
+
+             agregar = ""
+             while agregar != "no":
 
                  id= str(input('Ingrese CodigoID: '))
                  nombre = str(input('Digite su nombre: '))
@@ -161,7 +162,8 @@ def menu_principal():
                  direccion = str(input('Cual es su direccion: '))
                  database.Agregar(id,nombre,apellido,telefono,direccion)
                  print("\n")
-                 agregar = input('DESEA AGREGAR OTRO REGISTRO(SI\NO)?: ')
+                 agregar = input("DESEA AGREGAR OTRO REGISTRO(SI/NO)?: ")
+                 print("\n")
                  
 
 
