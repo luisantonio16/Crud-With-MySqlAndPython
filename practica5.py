@@ -14,7 +14,7 @@ class Database:
 
           self.cursos = self.conexion.cursor()
 
-
+     #Metodo Agregar
      def Agregar(self,id,nombre,apellido,telefono,direccion):
 
           sql = "INSERT INTO agendatel (idcod,nombre,apellido,telefono,direccion) VALUES ('{}','{}','{}','{}','{}')".format(id,nombre,apellido,telefono,direccion)
@@ -33,7 +33,7 @@ class Database:
               raise
 
 
-
+     #Metodo listar todos los contactos
      def listar_contactos(self):
          sql = 'SELECT idcod,nombre,apellido,telefono,direccion FROM agendatel'
 
@@ -56,8 +56,8 @@ class Database:
 
 
 
-
-     def buscar_user(self,name):
+     #Metodo mostrar
+     def Mostrar(self,name):
 
          sql= "SELECT idcod, nombre, apellido, telefono, direccion FROM agendatel WHERE nombre = '{}' ".format(name)
 
@@ -77,12 +77,12 @@ class Database:
 
 
          except Exception as ex:
-             print("ESTE NOMBRE NO ES VALIDO!!!")
+           
              raise
 
 
 
-
+     #metodo Actualizar
      def Actualizar(self,telefono,nom):
          sql = "UPDATE agendatel SET telefono = '{}' WHERE nombre = '{}'".format(telefono, nom)
          try:
@@ -96,7 +96,7 @@ class Database:
              raise
 
 
-
+     #metodo eliminar
      def Eliminar(self,codigoid):
 
          sql = " DELETE FROM agendatel WHERE idcod = {}".format(codigoid)
@@ -134,13 +134,13 @@ def menu_principal():
 
     opcion = 0
     while opcion != 6:
-         print('\tWELCOME AGENDA TELEFONICA\n')
+         print('\tWELCOME AGENDA TELEFONICA')
 
-         print('1.Agregar NUEVO CONTACTO.')
+         print('1.AGREGAR NUEVO CONTACTO.')
          print('2.MOSTRAR TODOS LOS CONTACTOS.')
          print('3.BUSCAR CONTACTO.')
-         print('4.ACTUALIZAR CONTACTOS.')
-         print('5.ELIMINAR UN contactos.')
+         print('4.ACTUALIZAR CONTACTO.')
+         print('5.ELIMINAR UN CONTACTO.')
          print('6.SALIR.')
          opcion = int(input("ELEGIR OPCION: "))
          clear()
@@ -160,15 +160,17 @@ def menu_principal():
                  apellido = str(input('Introduzca su Apellido: '))
                  telefono = str(input('Diga cual es su Telefono: '))
                  direccion = str(input('Cual es su direccion: '))
-                 database.Agregar(id,nombre,apellido,telefono,direccion)
+                 agregar= database.Agregar(id,nombre,apellido,telefono,direccion)
+                 if agregar == 0:
+                      print("EL REGISTRO NO SE PUDO AGREGAR")
+                 else:
+                      print("EL REGISTRO SE AGREGO CORRECTAMENTE")
                  print("\n")
                  agregar = input("DESEA AGREGAR OTRO REGISTRO(SI/NO)?: ")
                  print("\n")
                  
 
-
-
-
+         #opciones del menu
          elif opcion == 2:
              database.listar_contactos()
              print("\n")
@@ -177,7 +179,7 @@ def menu_principal():
          elif opcion == 3:
             nom = str(input('Digite el Nombre A buscar: '))
             print("\n")
-            database.buscar_user(nom)
+            database.Mostrar(nom)
 
 
 
@@ -189,23 +191,31 @@ def menu_principal():
              clear()
              print("\n")
 
-
              cell = input('Telefono: ')
 
-             database.Actualizar(cell , nom)
+             actualizar = database.Actualizar(cell , nom)
+             if actualizar == 0:
+                 print("EL REGISTRO NO SE PUDO ACTUALIZAR")
+             else:
+                 print("EL REGISTRO SE ACTUALIZO CORRECTAMENTE")
 
 
          elif opcion == 5:
 
              codigo = str(input('INTRODUZCA EL ID DEL REGISTRO: '))
-             database.Eliminar(codigo)
+             eliminar = database.Eliminar(codigo)
+             if eliminar == 0:
+                 print("EL REGISTRO NO SE PUDO ELIMINAR")
+             else:
+                 print("EL REGISTRO SE ELIMINO")
              print("\n")
 
 
          elif opcion == 6:
              print("Adios!!!")
 
-
+         else:
+             print("OPCION NO VALIDA!!!")
 
 
 
