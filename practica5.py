@@ -29,7 +29,7 @@ class Database:
               self.conexion.close()
              
 
-          except ConnectionError as err:
+          except Exception as err:
               self.conexion.rollback('SU REGISTRO NO ES VALIDO')
               return err
 
@@ -51,7 +51,7 @@ class Database:
                  print('----------\n')
 
 
-         except  ConnectionError  as err:
+         except Exception as err:
              return err
 
 
@@ -182,6 +182,7 @@ def menu_principal():
                       print("EL REGISTRO SE AGREGO CORRECTAMENTE")
                  print("\n")
                  agregar = input("DESEA AGREGAR OTRO REGISTRO(SI/NO)?: ")
+                 agregar.lower()
            
                  
 
@@ -206,7 +207,7 @@ def menu_principal():
              print("\n")
 
              cell = input('Telefono: ')
-
+             
              actualizar = database.Actualizar(cell , idcod)
              if actualizar == 0:
                  print("EL REGISTRO NO SE PUDO ACTUALIZAR")
