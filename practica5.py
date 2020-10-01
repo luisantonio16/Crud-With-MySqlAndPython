@@ -23,14 +23,15 @@ class Database:
               self.cursos.execute(sql)
               count = self.cursos.rowcount
               self.conexion.commit()
+
+              return True
               self.cursos.close()
               self.conexion.close()
-              print('SUS REGISTROS SE A AGREGADO CORRECTAMENTE')
+             
 
-          except Exception as ex:
-              print('SU REGISTRO NO ES VALIDO')
-
-              raise
+          except ConnectionError as err:
+              self.conexion.rollback('SU REGISTRO NO ES VALIDO')
+              return err
 
 
      #Metodo listar todos los contactos
@@ -50,8 +51,8 @@ class Database:
                  print('----------\n')
 
 
-         except Exception as ex:
-             raise
+         except  ConnectionError  as err:
+             return err
 
 
 
@@ -73,27 +74,34 @@ class Database:
             print('Direccion:', agendatel[4])
             self.cursos.close()
             self.conexion.close()
+            return True
 
 
 
-         except Exception as ex:
-           
-             raise
+         except Exception as err:
+             self.conexion.rollback()
+             print("Este nombre no esta en el registro")
+             return err
+            
 
 
 
      #metodo Actualizar
      def Actualizar(self,telefono,nom):
-         sql = "UPDATE agendatel SET telefono = '{}' WHERE nombre = '{}'".format(telefono, nom)
+         sql = "UPDATE agendatel SET telefono = '{}' WHERE id = '{}'".format(telefono, id)
          try:
              self.cursos.execute(sql)
              self.conexion.commit()
+             print("El registro se actualizo")
+             return True
              self.cursos.close()
              self.conexion.close()
 
-         except Exception as ex:
+         except Exception as err:
+             self.conexion.rollback("NO se PUDO ACTUALIZAR EL REGISTRO!!!")
+             return err
 
-             raise
+             
 
 
      #metodo eliminar
@@ -104,13 +112,20 @@ class Database:
          try:
              self.cursos.execute(sql)
              self.conexion.commit()
+             print('EL REGISTRO SE A ELIMINADO CORRECTAMENTE!!!')
+             return True
+         
              self.cursos.close()
              self.conexion.close()
-             print('EL REGISTRO SE A ELIMINADO CORRECTAMENTE!!!')
+             
 
-         except Exception as ex:
-             print('EL ID_CODIGO NO ES VALIDO!!!')
-             raise
+         except Exception as err:
+             self.conexion.rollback()
+             print('EL REGISTRO NO SE PUDO ELIMINAR!!!')
+             return err
+
+             
+             
 
 
 
@@ -134,7 +149,7 @@ def menu_principal():
 
     opcion = 0
     while opcion != 6:
-         print('\tWELCOME AGENDA TELEFONICA')
+         print('\tWELCOME AGENDA TELEFONICA\n')
 
          print('1.AGREGAR NUEVO CONTACTO.')
          print('2.MOSTRAR TODOS LOS CONTACTOS.')
@@ -160,14 +175,14 @@ def menu_principal():
                  apellido = str(input('Introduzca su Apellido: '))
                  telefono = str(input('Diga cual es su Telefono: '))
                  direccion = str(input('Cual es su direccion: '))
-                 agregar= database.Agregar(id,nombre,apellido,telefono,direccion)
-                 if agregar == 0:
+                 agrega= database.Agregar(id,nombre,apellido,telefono,direccion)
+                 if agrega == 0:
                       print("EL REGISTRO NO SE PUDO AGREGAR")
                  else:
                       print("EL REGISTRO SE AGREGO CORRECTAMENTE")
                  print("\n")
                  agregar = input("DESEA AGREGAR OTRO REGISTRO(SI/NO)?: ")
-                 print("\n")
+           
                  
 
          #opciones del menu
@@ -182,18 +197,17 @@ def menu_principal():
             database.Mostrar(nom)
 
 
-
-
          elif opcion == 4:
              clear()
-             nom = str(input('Digita el nombre del registro a Actualizar: '))
-             database.buscar_user(nom)
+             
+             idcod = str(input('Digita id del registro a Actualizar: '))
+             database.Mostrar(idcod)
              clear()
              print("\n")
 
              cell = input('Telefono: ')
 
-             actualizar = database.Actualizar(cell , nom)
+             actualizar = database.Actualizar(cell , idcod)
              if actualizar == 0:
                  print("EL REGISTRO NO SE PUDO ACTUALIZAR")
              else:
@@ -204,10 +218,8 @@ def menu_principal():
 
              codigo = str(input('INTRODUZCA EL ID DEL REGISTRO: '))
              eliminar = database.Eliminar(codigo)
-             if eliminar == 0:
-                 print("EL REGISTRO NO SE PUDO ELIMINAR")
-             else:
-                 print("EL REGISTRO SE ELIMINO")
+           
+            
              print("\n")
 
 
